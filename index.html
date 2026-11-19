@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#08070F" />
+  <meta name="description" content="تحدي الأذكياء — برنامج مسابقات تلفزيوني تفاعلي باللغة العربية: ثماني مراحل، ٤٨ سؤالًا، نقاط ومؤقتات ومفاجآت." />
+  <title>تحدي الأذكياء | برنامج المسابقات التفاعلي</title>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='26' fill='%2308070F'/%3E%3Cpath d='M55 10L26 55h18l-4 35 31-48H52l3-32z' fill='%23FFD400'/%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/quiz.css" />
+  <link rel="stylesheet" href="css/editor.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body data-screen="start">
+
+  <!-- ============ الخلفية المسرحية ============ -->
+  <div class="bg-scene" aria-hidden="true">
+    <div class="aurora aurora--violet"></div>
+    <div class="aurora aurora--blue"></div>
+    <div class="aurora aurora--yellow"></div>
+    <div class="stage-beams">
+      <span class="beam beam--1"></span>
+      <span class="beam beam--2"></span>
+      <span class="beam beam--3"></span>
+    </div>
+    <div class="grid-floor"></div>
+    <div class="bg-stars" id="bgStars"></div>
+    <span class="bg-glyph bg-glyph--1">؟</span>
+    <span class="bg-glyph bg-glyph--2">✦</span>
+    <span class="bg-glyph bg-glyph--3">؟</span>
+    <span class="bg-glyph bg-glyph--4">✧</span>
+    <div class="vignette"></div>
+  </div>
+
+  <!-- ============ الشريط العلوي ============ -->
+  <header class="appbar">
+    <button class="brand" id="brandHome" type="button" aria-label="العودة إلى الشاشة الرئيسية">
+      <span class="brand-badge" aria-hidden="true">🧠<i>⚡</i></span>
+      <span class="brand-copy">
+        <strong>تحدي الأذكياء</strong>
+        <small>QUIZ ARENA</small>
+      </span>
+    </button>
+
+    <div class="appbar-tools">
+      <button class="tool-btn" id="leaderboardBtn" type="button" title="لوحة المتصدرين">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 4h10v5a5 5 0 0 1-10 0V4z"></path>
+          <path d="M7 6H4v2a3 3 0 0 0 3 3"></path>
+          <path d="M17 6h3v2a3 3 0 0 1-3 3"></path>
+          <path d="M12 14v3"></path>
+          <path d="M8 20h8"></path>
+          <path d="M9 17h6l1 3H8l1-3z"></path>
+        </svg>
+        <span>المتصدرون</span>
+      </button>
+
+      <button class="tool-btn" id="editorBtn" type="button" title="إدارة بنك الأسئلة">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h10"></path>
+          <path d="M18 6h2"></path>
+          <circle cx="16" cy="6" r="2"></circle>
+          <path d="M4 12h4"></path>
+          <path d="M12 12h8"></path>
+          <circle cx="10" cy="12" r="2"></circle>
+          <path d="M4 18h12"></path>
+          <path d="M20 18h0"></path>
+          <circle cx="18" cy="18" r="2"></circle>
+        </svg>
+        <span>الأسئلة</span>
+      </button>
+
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="تشغيل الصوت" aria-pressed="true" title="الصوت">
+        <svg class="icon-sound-on" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 5L6 9H3v6h3l5 4V5z"></path>
+          <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+          <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+        </svg>
+        <svg class="icon-sound-off" viewBox="0 0 24 24" aria-hidden="true" hidden>
+          <path d="M11 5L6 9H3v6h3l5 4V5z"></path>
+          <path d="M16 9l5 6"></path>
+          <path d="M21 9l-5 6"></path>
+        </svg>
+      </button>
+
+      <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="ملء الشاشة" title="ملء الشاشة (F)">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9V4h5"></path>
+          <path d="M20 9V4h-5"></path>
+          <path d="M4 15v5h5"></path>
+          <path d="M20 15v5h-5"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="app">
+
+    <!-- =====================================================
+         ١ — شاشة البداية
+         ===================================================== -->
+    <section class="screen screen--start is-active" id="screen-start" aria-label="شاشة البداية">
+      <div class="wrap start-wrap">
+
+        <div class="hero">
+          <div class="onair reveal" style="--i:0">
+            <span class="onair-dot" aria-hidden="true"></span>
+            <span>ON AIR</span>
+            <span class="onair-sep" aria-hidden="true"></span>
+            <em>الموسم الأول</em>
+          </div>
+
+          <h1 class="game-title reveal" style="--i:1">
+            <span class="game-title-top">تحدي</span>
+            <span class="game-title-main">
+              الأذكياء
+              <span class="title-spark title-spark--1" aria-hidden="true">✦</span>
+              <span class="title-spark title-spark--2" aria-hidden="true">✧</span>
+            </span>
+          </h1>
+
+          <p class="hero-lead reveal" style="--i:2">
+            ثمانية تحديات… ٤٨ سؤالًا… ومفاجآت لا ترحم.
+            <strong>هل تملك ما يلزم لتصعد إلى القمة؟</strong>
+          </p>
+
+          <form class="player-form reveal" id="startForm" novalidate style="--i:3">
+            <label for="playerName">اسم المتسابق</label>
+            <div class="input-row">
+              <span class="input-icon" aria-hidden="true">👤</span>
+              <input
+                id="playerName"
+                name="playerName"
+                type="text"
+                maxlength="24"
+                autocomplete="nickname"
+                placeholder="اكتب اسمك هنا…"
+                aria-describedby="nameError"
+              />
+              <button class="btn btn-primary btn--start" id="startBtn" type="submit">
+                <span>ابدأ التحدي</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 12H5"></path>
+                  <path d="M11 6l-6 6 6 6"></path>
+                </svg>
+              </button>
+            </div>
+            <p class="form-error" id="nameError" hidden>اكتب اسمًا من حرفين على الأقل حتى نعرف من ننادي عليه! 🎤</p>
+          </form>
+
+          <div class="hero-stats reveal" style="--i:4">
+            <span><b>٨</b> تحديات</span>
+            <i aria-hidden="true"></i>
+            <span><b>٤٨</b> سؤالًا</span>
+            <i aria-hidden="true"></i>
+            <span><b>×2</b> نقاط المفاجأة</span>
+          </div>
+
+          <div class="hero-actions reveal" style="--i:5">
+            <button class="text-link" id="howBtn" type="button">
+              <span aria-hidden="true">?</span> كيف تلعب
+            </button>
+            <button class="text-link" id="startEditorBtn" type="button">
+              <span aria-hidden="true">✏️</span> عدّل بنك الأسئلة
+            </button>
+            <span class="kbd-tip"><kbd>F</kbd> لشاشة العرض</span>
+          </div>
+        </div>
+
+        <aside class="hero-side reveal" style="--i:3" aria-label="أجواء البرنامج والمتصدرون">
+          <div class="trophy-stage" aria-hidden="true">
+            <div class="trophy-rays"></div>
+            <div class="trophy-orbit orbit--1"></div>
+            <div class="trophy-orbit orbit--2"></div>
+            <div class="trophy-rings"></div>
+            <div class="trophy-emoji">🏆</div>
+            <div class="float-tag float-tag--a">🎯 دقة</div>
+            <div class="float-tag float-tag--b">🎁 نقاط مضاعفة</div>
+            <div class="float-tag float-tag--c">🔥 سلسلة إجابات</div>
+            <p class="trophy-caption">بطل الموسم؟</p>
+          </div>
+
+          <div class="mini-board">
+            <div class="mini-board-head">
+              <span><i aria-hidden="true">🏆</i> لوحة المتصدرين</span>
+              <button id="miniBoardBtn" type="button">عرض الكل</button>
+            </div>
+            <ol class="mini-list" id="miniLeaderboard">
+              <li class="mini-empty">لا يوجد أبطال بعد… كن الأول! ⚡</li>
+            </ol>
+          </div>
+        </aside>
+      </div>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>⚡ كل ثانية متبقية تمنحك نقاطًا إضافية</span>
+          <span>🔥 ثلاث إجابات صحيحة متتالية = مكافأة سلسلة</span>
+          <span>🎁 السؤال المفاجئ يضاعف النقاط</span>
+          <span>🏆 هل تدخل لوحة المتصدرين؟</span>
+          <span>🧠 لا تظهر الإجابة قبل أن تجيب!</span>
+          <span>⚡ كل ثانية متبقية تمنحك نقاطًا إضافية</span>
+          <span>🔥 ثلاث إجابات صحيحة متتالية = مكافأة سلسلة</span>
+          <span>🎁 السؤال المفاجئ يضاعف النقاط</span>
+          <span>🏆 هل تدخل لوحة المتصدرين؟</span>
+          <span>🧠 لا تظهر الإجابة قبل أن تجيب!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ٢ — اختيار التحديات
+         ===================================================== -->
+    <section class="screen" id="screen-stages" aria-label="اختيار التحدي">
+      <div class="wrap">
+        <div class="page-head">
+          <button class="btn btn-ghost btn--back" id="stagesBack" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="M13 6l6 6-6 6"></path>
+            </svg>
+            الرئيسية
+          </button>
+
+          <div class="page-title">
+            <span class="kicker">المتسابق <b id="stagePlayer">—</b></span>
+            <h2>اختر تحديك</h2>
+            <p>كل مرحلة لها طعمها… وكل نقاطها محسوبة.</p>
+          </div>
+
+          <div class="completion-card" aria-label="نسبة الإنجاز">
+            <span>أكملت</span>
+            <strong id="completedCount">٠ من ٨</strong>
+            <div class="completion-dots" id="completionDots" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="stage-grid" id="stageGrid"></div>
+
+        <div class="random-strip">
+          <div class="random-copy">
+            <span class="random-icon" aria-hidden="true">🎲</span>
+            <div>
+              <strong>محتار من أين تبدأ؟</strong>
+              <span>دع الحظ يختار لك تحديًا عشوائيًا.</span>
+            </div>
+          </div>
+          <button class="btn btn-violet" id="randomStageBtn" type="button">تحدٍّ عشوائي</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ٣ — شاشة اللعب
+         ===================================================== -->
+    <section class="screen screen--quiz" id="screen-quiz" aria-label="السؤال الحالي">
+      <div class="wrap quiz-shell">
+
+        <div class="quiz-hud">
+          <button class="btn btn-ghost btn--quit" id="quitBtn" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6L6 18"></path>
+              <path d="M6 6l12 12"></path>
+            </svg>
+            <span>خروج</span>
+          </button>
+
+          <div class="hud-stage">
+            <span class="hud-stage-icon" id="hudStageIcon" aria-hidden="true">⚡</span>
+            <div>
+              <small>التحدي الحالي</small>
+              <strong id="hudStageName">الشرارة</strong>
+            </div>
+          </div>
+
+          <div class="hud-stats">
+            <div class="score-pill" id="scorePill" aria-label="نقاطك">
+              <span aria-hidden="true">⭐</span>
+              <b id="liveScore">٠</b>
+            </div>
+            <div class="streak-pill" id="streakPill" aria-label="سلسلة الإجابات الصحيحة">
+              <span aria-hidden="true">🔥</span>
+              <b id="liveStreak">٠</b>
+            </div>
+            <div class="question-count">
+              <b id="qIndex">١</b>
+              <span>/</span>
+              <span id="qTotal">٦</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-progress" role="progressbar" aria-label="تقدم المرحلة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="quizProgress">
+          <span id="quizProgressFill"></span>
+        </div>
+
+        <div class="quiz-wrap">
+          <aside class="timer-panel">
+            <div class="timer-ring" id="timerRing">
+              <svg viewBox="0 0 140 140" aria-hidden="true">
+                <circle class="ring-bg" cx="70" cy="70" r="58"></circle>
+                <circle class="ring-progress" id="timerCircle" cx="70" cy="70" r="58"></circle>
+              </svg>
+              <div class="timer-value">
+                <span id="timerNum">٢٥</span>
+                <small>ثانية</small>
+              </div>
+            </div>
+
+            <div class="question-meta">
+              <span class="meta-pill" id="typeBadge">اختيار من متعدد</span>
+              <span class="meta-pill meta-pill--points" id="pointsBadge">+١٠٠ نقطة</span>
+            </div>
+
+            <div class="timer-caption" id="timerCaption">كل ثانية تبقى = نقاط إضافية</div>
+          </aside>
+
+          <article class="question-card" id="questionCard" aria-live="polite">
+            <div class="question-top">
+              <span class="question-kicker" id="questionKicker">السؤال الأول</span>
+              <span class="stakes" id="stakes">نقاط ×١</span>
+            </div>
+
+            <h2 class="question-prompt" id="questionPrompt"></h2>
+
+            <div class="visual-box" id="visualBox" hidden aria-hidden="true"></div>
+
+            <div class="options" id="optionsWrap"></div>
+
+            <div class="words-game" id="wordsWrap" hidden>
+              <div class="answer-board" id="answerBoard" aria-label="الجملة التي تكونها"></div>
+              <div class="word-bank" id="wordBank" aria-label="الكلمات المتاحة"></div>
+              <div class="words-actions">
+                <button class="btn btn-ghost btn--sm" id="clearWords" type="button">مسح الكل</button>
+                <button class="btn btn-primary btn--sm" id="checkWords" type="button">تحقق من الجملة</button>
+              </div>
+            </div>
+
+            <div class="question-tools">
+              <button class="hint-btn" id="hintBtn" type="button">
+                <span aria-hidden="true">💡</span>
+                <span>اطلب تلميحًا</span>
+                <b class="num">−٢٠</b>
+              </button>
+              <span class="hint-text" id="hintText"></span>
+            </div>
+
+            <div class="feedback" id="feedback" hidden role="status">
+              <div class="feedback-icon" id="feedbackIcon" aria-hidden="true">✓</div>
+              <div class="feedback-body">
+                <strong id="feedbackTitle">إجابة صحيحة!</strong>
+                <p id="feedbackText"></p>
+                <span class="feedback-points" id="feedbackPoints"></span>
+              </div>
+            </div>
+
+            <div class="question-footer">
+              <span class="keyboard-hint" id="keyboardHint">
+                <kbd>1</kbd>–<kbd>4</kbd> للاختيار · <kbd>Enter</kbd> للتالي
+              </span>
+              <button class="btn btn-primary btn--next" id="nextBtn" type="button" hidden>
+                <span id="nextBtnText">السؤال التالي</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M19 12H5"></path>
+                  <path d="M11 6l-6 6 6 6"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ٤ — النتائج
+         ===================================================== -->
+    <section class="screen screen--results" id="screen-results" aria-label="نتيجة التحدي">
+      <div class="wrap results-wrap">
+
+        <div class="results-hero">
+          <div class="result-medal" id="resultMedal" aria-hidden="true">🏆</div>
+          <span class="kicker">انتهى التحدي يا <b id="resultName">—</b></span>
+          <h2 id="resultTitle">أسطورة التحدي!</h2>
+          <p id="resultMessage"></p>
+          <div class="result-stars" id="resultStars" aria-label="تقييم النجوم"></div>
+          <div class="final-score">
+            <span>مجموع نقاطك</span>
+            <strong id="finalScore">٠</strong>
+            <small>نقطة</small>
+          </div>
+        </div>
+
+        <div class="result-stats">
+          <div class="stat-card stat-card--green">
+            <span class="stat-icon" aria-hidden="true">✓</span>
+            <b id="statCorrect">٠</b>
+            <small>إجابات صحيحة</small>
+          </div>
+          <div class="stat-card stat-card--red">
+            <span class="stat-icon" aria-hidden="true">✕</span>
+            <b id="statWrong">٠</b>
+            <small>إجابات خاطئة</small>
+          </div>
+          <div class="stat-card stat-card--blue">
+            <span class="stat-icon" aria-hidden="true">🎯</span>
+            <b id="statAccuracy">٠٪</b>
+            <small>الدقة</small>
+          </div>
+          <div class="stat-card stat-card--yellow">
+            <span class="stat-icon" aria-hidden="true">🔥</span>
+            <b id="statStreak">٠</b>
+            <small>أفضل سلسلة</small>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <section class="panel leaderboard-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">TOP PLAYERS</span>
+                <h3>لوحة المتصدرين</h3>
+              </div>
+              <span class="panel-icon" aria-hidden="true">🏆</span>
+            </div>
+            <div class="board-list" id="resultLeaderboard"></div>
+          </section>
+
+          <section class="panel review-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-kicker">ANSWER REVIEW</span>
+                <h3>مراجعة الإجابات</h3>
+              </div>
+              <span class="panel-icon" aria-hidden="true">📋</span>
+            </div>
+            <div class="review-list" id="reviewList"></div>
+          </section>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-primary" id="replayBtn" type="button">
+            <span aria-hidden="true">↻</span> أعد المرحلة
+          </button>
+          <button class="btn btn-violet" id="otherStagesBtn" type="button">
+            <span aria-hidden="true">🎯</span> تحدٍّ آخر
+          </button>
+          <button class="btn btn-ghost" id="shareBtn" type="button">
+            <span aria-hidden="true">🔗</span> شارك نتيجتك
+          </button>
+          <button class="btn btn-ghost" id="homeBtn" type="button">
+            <span aria-hidden="true">🏠</span> الرئيسية
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ٥ — إدارة بنك الأسئلة
+         ===================================================== -->
+    <section class="screen screen--editor" id="screen-editor" aria-label="إدارة بنك الأسئلة">
+      <div class="wrap">
+        <div class="page-head page-head--editor">
+          <button class="btn btn-ghost btn--back" id="editorBack" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="M13 6l6 6-6 6"></path>
+            </svg>
+            رجوع
+          </button>
+
+          <div class="page-title">
+            <span class="kicker">لوحة التحكم</span>
+            <h2>بنك الأسئلة</h2>
+            <p>أضف، عدّل، احذف… وكل تغيير يُحفظ في جهازك فورًا.</p>
+          </div>
+
+          <button class="btn btn-primary" id="addQuestionBtn" type="button">
+            <span aria-hidden="true">＋</span> سؤال جديد
+          </button>
+        </div>
+
+        <div class="editor-toolbar">
+          <label class="search-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+            <input type="search" id="questionSearch" placeholder="ابحث في الأسئلة…" />
+          </label>
+
+          <label class="select-field">
+            <span class="sr-only">تصفية حسب المرحلة</span>
+            <select id="stageFilter"></select>
+          </label>
+
+          <div class="editor-actions">
+            <button class="btn btn-ghost btn--sm" id="exportBtn" type="button">⬇ تصدير</button>
+            <button class="btn btn-ghost btn--sm" id="importBtn" type="button">⬆ استيراد</button>
+            <button class="btn btn-ghost btn--sm btn--danger" id="resetQuestionsBtn" type="button">↺ الافتراضي</button>
+            <input type="file" id="importFile" accept="application/json,.json" hidden />
+          </div>
+        </div>
+
+        <div class="editor-meta">
+          <span>إجمالي الأسئلة: <b id="editorCount">٠</b></span>
+          <span class="editor-saved" id="editorSaved">💾 الحفظ تلقائي</span>
+        </div>
+
+        <div class="question-list" id="questionList"></div>
+
+        <div class="editor-note">
+          <span aria-hidden="true">💡</span>
+          <p>
+            التعديلات محفوظة محليًا في المتصفح. استخدم <b>تصدير</b> لحفظ نسخة احتياطية من الأسئلة،
+            أو <b>استيراد</b> لنقلها إلى جهاز آخر.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ شاشة الاستعداد ============ -->
+  <div class="round-intro" id="roundIntro" hidden aria-hidden="true">
+    <div class="round-intro-inner">
+      <div class="round-intro-glow"></div>
+      <span class="intro-index" id="introIndex">التحدي الأول</span>
+      <span class="intro-icon" id="introIcon">⚡</span>
+      <h2 id="introName">الشرارة</h2>
+      <p id="introDesc">ستة أسئلة تشعل المنافسة.</p>
+      <span class="intro-ready">استعد…</span>
+    </div>
+  </div>
+
+  <!-- ============ مودال لوحة المتصدرين ============ -->
+  <div class="modal" id="leaderboardModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
+      <header class="modal-head">
+        <div>
+          <span class="modal-kicker">HALL OF FAME</span>
+          <h3 id="leaderboardTitle">لوحة المتصدرين</h3>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </header>
+      <div class="modal-body">
+        <div class="board-list" id="leaderboardList"></div>
+      </div>
+      <footer class="modal-foot modal-foot--between">
+        <button class="btn btn-ghost btn--sm btn--danger" id="clearBoardBtn" type="button">مسح السجل</button>
+        <button class="btn btn-violet btn--sm" type="button" data-close-modal>إغلاق</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ مودال كيف تلعب ============ -->
+  <div class="modal" id="howModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel modal-panel--wide" role="dialog" aria-modal="true" aria-labelledby="howTitle">
+      <header class="modal-head">
+        <div>
+          <span class="modal-kicker">HOW TO PLAY</span>
+          <h3 id="howTitle">كيف تلعب؟</h3>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </header>
+      <div class="modal-body">
+        <div class="how-grid">
+          <div class="how-item"><span>١</span><div><strong>اختر تحديك</strong><p>ثماني مراحل، ولكل مرحلة نوع سؤال ومؤقت مختلف.</p></div></div>
+          <div class="how-item"><span>٢</span><div><strong>أجب قبل الوقت</strong><p>كل ثانية متبقية تتحول إلى نقاط إضافية في جيبك.</p></div></div>
+          <div class="how-item"><span>٣</span><div><strong>ابنِ سلسلة</strong><p>ثلاث إجابات صحيحة متتالية تمنحك مكافأة سلسلة +٢٥.</p></div></div>
+          <div class="how-item"><span>٤</span><div><strong>احذر الخصم</strong><p>الإجابة الخاطئة تخصم ٤٠ نقطة، وانتهاء الوقت يخصم ٢٥.</p></div></div>
+        </div>
+        <div class="how-highlight">
+          <span aria-hidden="true">🎁</span>
+          <div><strong>السؤال المفاجئ ×٢</strong><p>في المرحلة الأخيرة تتضاعف نقاط كل سؤال صحيح. اغتنم الفرصة!</p></div>
+        </div>
+        <div class="how-keys">
+          <span><kbd>1</kbd>–<kbd>4</kbd> اختيار الإجابة</span>
+          <span><kbd>Enter</kbd> السؤال التالي</span>
+          <span><kbd>F</kbd> ملء الشاشة</span>
+          <span><kbd>Esc</kbd> إغلاق النوافذ</span>
+        </div>
+      </div>
+      <footer class="modal-foot">
+        <button class="btn btn-primary btn--sm" type="button" data-close-modal>فهمت، هيا بنا</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ مودال إضافة / تعديل سؤال ============ -->
+  <div class="modal" id="questionModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel modal-panel--wide" role="dialog" aria-modal="true" aria-labelledby="questionModalTitle">
+      <header class="modal-head">
+        <div>
+          <span class="modal-kicker">QUESTION BUILDER</span>
+          <h3 id="questionModalTitle">سؤال جديد</h3>
+        </div>
+        <button class="modal-close" type="button" data-close-modal aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </header>
+
+      <form id="questionForm" novalidate>
+        <div class="modal-body">
+          <input type="hidden" id="fId" />
+          <div class="form-grid">
+            <label class="field">
+              <span>المرحلة</span>
+              <select id="fStage" required></select>
+            </label>
+
+            <label class="field">
+              <span>نوع السؤال</span>
+              <select id="fType" required>
+                <option value="mcq">اختيار من متعدد</option>
+                <option value="truefalse">صح أو خطأ</option>
+                <option value="spot">اكتشف الخطأ</option>
+                <option value="picture">خمّن الصورة</option>
+                <option value="words">رتّب الكلمات</option>
+                <option value="riddle">لغز / سؤال ذكي</option>
+                <option value="speed">سؤال سرعة</option>
+              </select>
+            </label>
+
+            <label class="field field--full">
+              <span>نص السؤال</span>
+              <textarea id="fPrompt" rows="3" required placeholder="اكتب السؤال هنا…"></textarea>
+            </label>
+
+            <label class="field field--full" id="fVisualField" hidden>
+              <span>رموز الصورة</span>
+              <input id="fVisual" type="text" placeholder="مثال: 🧊 🐧 🏔️" />
+              <small>استخدم الرموز التعبيرية لصناعة صورة رمزية.</small>
+            </label>
+
+            <div class="field field--full" id="fOptionsField">
+              <span>الخيارات</span>
+              <div class="option-inputs" id="optionInputs">
+                <label><span>أ</span><input id="fOpt0" type="text" placeholder="الخيار الأول" /></label>
+                <label><span>ب</span><input id="fOpt1" type="text" placeholder="الخيار الثاني" /></label>
+                <label><span>ج</span><input id="fOpt2" type="text" placeholder="الخيار الثالث" /></label>
+                <label><span>د</span><input id="fOpt3" type="text" placeholder="الخيار الرابع" /></label>
+              </div>
+              <label class="field-inline">
+                <span>الإجابة الصحيحة</span>
+                <select id="fAnswer"></select>
+              </label>
+            </div>
+
+            <div class="field field--full" id="fWordsField" hidden>
+              <label class="field">
+                <span>الجملة الصحيحة</span>
+                <input id="fWordsAnswer" type="text" placeholder="مثال: العلم نور والجهل ظلام" />
+              </label>
+              <label class="field">
+                <span>الكلمات (اختياري)</span>
+                <input id="fWords" type="text" placeholder="العلم | نور | والجهل | ظلام" />
+                <small>افصل بين الكلمات بعلامة | أو اتركها فارغة ليتم تقسيم الجملة تلقائيًا.</small>
+              </label>
+            </div>
+
+            <label class="field field--full">
+              <span>تلميح اختياري</span>
+              <input id="fHint" type="text" placeholder="تلميح صغير يساعد اللاعب دون كشف الإجابة" />
+            </label>
+
+            <label class="field field--full">
+              <span>شرح الإجابة</span>
+              <textarea id="fExplanation" rows="2" placeholder="معلومة إضافية تظهر بعد الإجابة…"></textarea>
+            </label>
+
+            <label class="field">
+              <span>الوقت (ثانية)</span>
+              <input id="fTime" type="number" min="5" max="120" step="1" />
+            </label>
+
+            <label class="field">
+              <span>نقاط السؤال</span>
+              <input id="fPoints" type="number" min="10" max="1000" step="10" />
+            </label>
+          </div>
+        </div>
+
+        <footer class="modal-foot modal-foot--between">
+          <span class="form-note">ستظهر الإجابة الصحيحة بعد اختيار اللاعب فقط.</span>
+          <div class="modal-foot-actions">
+            <button class="btn btn-ghost btn--sm" type="button" data-close-modal>إلغاء</button>
+            <button class="btn btn-primary btn--sm" type="submit">حفظ السؤال</button>
+          </div>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ مودال التأكيد ============ -->
+  <div class="modal" id="confirmModal" hidden aria-hidden="true">
+    <div class="modal-backdrop" data-confirm-cancel></div>
+    <div class="modal-panel modal-panel--small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+      <div class="confirm-icon" id="confirmIcon" aria-hidden="true">⚠️</div>
+      <h3 id="confirmTitle">هل أنت متأكد؟</h3>
+      <p id="confirmText"></p>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost btn--sm" id="confirmCancel" type="button">إلغاء</button>
+        <button class="btn btn-primary btn--sm" id="confirmOk" type="button">تأكيد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ أدوات مساعدة ============ -->
+  <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <noscript>
+    <div class="noscript">فعّل JavaScript لتشغيل تحدي الأذكياء 🎮</div>
+  </noscript>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
